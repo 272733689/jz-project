@@ -37,6 +37,7 @@ const styleB = {
     color: '#000',
     textAlign: 'center',
     lineHeight: '40px'
+
 }
 
 const options = [

@@ -21,6 +21,7 @@ const { Header, Footer, Sider, Content } = Layout;
 const { SubMenu } = Menu;
 const { Search } = Input;
 const { Option, OptGroup } = AutoComplete;
+
 // const { Option } = Select;
 //自定义外观
 const styleB = {
@@ -68,7 +69,9 @@ class HomePage  extends Component{
         UserNumber:0,  //用户总数
         translation : 0 , // 热力站 数量
         dataUserName : [],  // 地图搜索框
-        mapCenter : '',  // 地图上的 定位
+
+        mapCenter : {longitude: 113.2545, latitude: 35.1733},
+        // mapCenter : '',  // 地图上的 定位  焦作： 113.254591  35.173351
 
         ce_cust_type : '1', // 地图默认类型为1   全部用户
         EnergyData : [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31],
@@ -184,19 +187,27 @@ class HomePage  extends Component{
             if(ds[0].result !== null){
                 for (var i=0;i<ds[0].result.length;i++){
                     if(this.state.ce_cust_type === '1'){
+                        console.log("选择了全部",ds[0].result[i]);
                         arry.push( {position:{longitude: ds[0].result[i].longitude, latitude:ds[0].result[i].latitude ,num : ds[0].result[i].num,id : ds[0].result[i].id ,username : ds[0].result[i].neighborhoodName}} , )
                         arry1.push( <option key={ds[0].result[i].longitude +","+ds[0].result[i].latitude}>{ds[0].result[i].neighborhoodName}</option>,)
                     }
 
                     if(this.state.ce_cust_type === '2'){
-                        if(ds[0].result[i].enableElec === true ||  ds[0].result[i].enableGas === true ||  ds[0].result[i].enableHeat === true ||
-                            ds[0].result[i].enableSteam === true || ds[0].result[i].enableWater === true
-                        ){
+                        //因为 判断 水热电气  还是 热力站 是判断 用户   而搜索的是小区， 所以 我这判断第一个 .....
+
+                        // if(ds[0].result[i].enableElec === true ||  ds[0].result[i].enableGas === true ||  ds[0].result[i].enableHeat === true ||
+                        //     ds[0].result[i].enableSteam === true || ds[0].result[i].enableWater === true){
+
+                        if(ds[0].result[i].ce_cust_type!== 41){
+                            console.log("选择了水电气热用户",ds[0].result[i]);
                             arry.push( {position:{longitude: ds[0].result[i].longitude, latitude:ds[0].result[i].latitude ,num : ds[0].result[i].num,id : ds[0].result[i].id ,username : ds[0].result[i].neighborhoodName}} , )
                             arry1.push( <option key={ds[0].result[i].longitude +","+ds[0].result[i].latitude}>{ds[0].result[i].neighborhoodName}</option>,)
                         }
+
+                            // }
                     }
                     if(this.state.ce_cust_type === '3'){
+                        console.log("选择了热力站");
                         if(ds[0].result[i].ce_cust_type === 41){
                             arry.push( {position:{longitude: ds[0].result[i].longitude, latitude:ds[0].result[i].latitude ,num : ds[0].result[i].num,id : ds[0].result[i].id ,username : ds[0].result[i].neighborhoodName}} , )
                             arry1.push( <option key={ds[0].result[i].longitude +","+ds[0].result[i].latitude}>{ds[0].result[i].neighborhoodName}</option>,)
@@ -255,6 +266,8 @@ class HomePage  extends Component{
         //     console.log("组合的数据是", arry);
         this.setState({
             // markers :arry,
+
+
             mapCenter :{longitude: longitude, latitude: latitude}
         })
 

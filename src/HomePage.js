@@ -96,7 +96,6 @@ class HomePage  extends Component{
     };
     //   加载页面时 触发
     componentDidMount() {
-         // this.getVideoMonitorList();
         this.getUserSizeEcharts();  //用户规模
         this.getEnergyUseTrendsEcharts(); //用能趋势 曲线图
         //充值与结算 曲线
@@ -490,64 +489,17 @@ class HomePage  extends Component{
             if(ds[0].result !== 0){
                 if( this.state.selectDateEnergy === 1 ){
                     for (var i=0;i< ds[0].result.length;i++){
-                        if (this.state.selectedOptionEnergy ===1 ){
                             EnergyDataArry.push(
-                                ds[0].result[i].hconsValueDay
+                                ds[0].result[i]
                             )
-                        }
-                        if (this.state.selectedOptionEnergy ===2 ){
-                            EnergyDataArry.push(
-                                ds[0].result[i].sconsValueDay
-                            )
-                        }
-                        if (this.state.selectedOptionEnergy ===3 ){
-                            EnergyDataArry.push(
-                                ds[0].result[i].econsValueDay
-                            )
-                        }
-                        if (this.state.selectedOptionEnergy ===4){
-                            EnergyDataArry.push(
-                                ds[0].result[i].wconsValueDay
-                            )
-                        }
-                        if (this.state.selectedOptionEnergy===5){
-                            EnergyDataArry.push(
-                                ds[0].result[i].gconsValueDay
-                            )
-                        }
-
                     }
-
                 }
 
                 if( this.state.selectDateEnergy === 2 ){
                     for (var i=0;i< ds[0].result.length;i++){
-                        if (this.state.selectedOptionEnergy ===1 ){
                             EnergyDataArry.push(
-                                ds[0].result[i].hconsValueMonth
+                                ds[0].result[i]
                             )
-                        }
-                        if (this.state.selectedOptionEnergy ===2 ){
-                            EnergyDataArry.push(
-                                ds[0].result[i].sconsValueMonth
-                            )
-                        }
-                        if (this.state.selectedOptionEnergy ===3 ){
-                            EnergyDataArry.push(
-                                ds[0].result[i].econsValueMonth
-                            )
-                        }
-                        if (this.state.selectedOptionEnergy ===4){
-                            EnergyDataArry.push(
-                                ds[0].result[i].wconsValueMonth
-                            )
-                        }
-                        if (this.state.selectedOptionEnergy===5){
-                            EnergyDataArry.push(
-                                ds[0].result[i].gconsValueMonth
-                            )
-                        }
-
                     }
                 }
 

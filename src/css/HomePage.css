@@ -462,3 +462,31 @@
     transition: all 100ms;
     box-sizing: border-box;
 }
+
+/** 水电气热 的下拉 文字会下坠*/
+.css-1uccc91-singleValue {
+    color: hsl(0,0%,20%);
+    margin-left: 2px;
+    margin-right: 2px;
+    max-width: calc(100% - 8px);
+    overflow: hidden;
+    position: absolute;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    top: 40%!important;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    box-sizing: border-box;
+}
+.css-1wa3eu0-placeholder  {
+    color: hsl(0,0%,50%);
+    margin-left: 2px;
+    margin-right: 2px;
+    position: absolute;
+    top: 40% !important;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    box-sizing: border-box;
+}

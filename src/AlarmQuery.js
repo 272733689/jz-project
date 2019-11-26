@@ -24,7 +24,7 @@ class AlarmQuery  extends Component{
         startValue: null, // 开始时间
         endValue: null,  // 结束时间
         endOpen: false,   //打开 ？
-        activeKey : '1', // 默认打开的tab1  未处理的页面
+        activeKey : '0', // 默认打开的tab1  未处理的页面
         sortType  : '0',      //      充值预警，欠费报警，越限报警，通讯故障
         objectType: '0',   // 小区  热力站  企业
         startDate : null,  // 开始时间
@@ -44,7 +44,6 @@ class AlarmQuery  extends Component{
         archiveTime : null ,// 归档时间
         archiveDesc : null ,//归档说明
 
-        handlerOption : [], // 下拉选择处理人
         handlerOptionData : [] , //数据集合
 
     };
@@ -79,13 +78,13 @@ class AlarmQuery  extends Component{
 
     }
 
-    //对象 选择下拉
+/*    //对象 选择下拉
     SelectObjectChange = (value) => {
         this.setState({
             objectType: value,  //
         });
 
-    }
+    }*/
 
 
 
@@ -156,20 +155,8 @@ class AlarmQuery  extends Component{
             }
         }).then((data) => {
             var ds = eval('(' + data + ')');
-            console.log("返回的数据结果是", ds[0].result);
-            console.log("返回的数据结果是呃呃呃呃呃呃", ds[0].resultHand[0].user_fullname);
-
-
-            let optionValue=[];
-            if(ds[0].resultHand !== null){
-                for (var i=0;i<ds[0].resultHand.length;i++){
-                    optionValue .push( <Option key={ ds[0].resultHand[i].user_fullname }>{ds[0].resultHand[i].user_fullname}</Option>,)
-                }
-            }
-
             this.setState({
                 dataSouce: ds[0].result ,
-                handlerOption : optionValue,
                 handlerOptionData : ds[0].resultHand,
             });
         })
@@ -182,7 +169,6 @@ class AlarmQuery  extends Component{
         console.log("告警类型是："+this.state.sortType );
         console.log("开始时间是："+this.state.startDate);
         console.log("结束时间是："+this.state.endDate);
-        console.log("对象是："+this.state.objectType);
 
         if(this.state.sortType ==="0"){
             reqwest({
@@ -258,193 +244,6 @@ class AlarmQuery  extends Component{
 
 
 
-    //弹出处理编辑框
-    showModalEdit = (record,e) => {
-        this.setState({
-            visible: true ,
-            id:record.id ,
-            handleTime : null , //处理时间
-            handler : null,    //处理人
-            telephone : null, // 联系电话
-            handleDesc : null, //处理说明
-        });
-
-    }
-
-    //处理编辑框的确定
-    handleOk = (e) => {
-
-        reqwest({
-            url: '/console/alarmQuery/processing',
-            method: 'GET',
-            credentials: 'include',
-            data: {
-                id : this.state.id,
-                handleTime : this.state.handleTime , //处理时间
-                handler : this.state.handler ,    //处理人
-                telephone : this.state.telephone , // 联系电话
-                handleDesc : this.state.handleDesc, //处理说明
-            }
-        }).then((data) => {
-            var ds = eval('(' + data + ')');
-            console.log("返回的数据结果是", ds[0].result);
-
-            this.setState({
-                activeKey: "3",  //
-                visible: false ,
-                handlerOption : [], // 下拉选择处理人
-                handlerOptionData : [] , //数据集合
-            },()=>{
-                this.getData();
-            });
-        })
-
-    }
-    //处理编辑框的取消
-    handleCancel= (e) => {
-        this.setState({
-            visible: false ,
-        });
-
-    }
-    cancel=(e) =>{
-        console.log("关闭归档的提示框",e);
-        // message.error('Click on No');
-    }
-
-    //归档
-    placeOnFile=  (record,e) => {
-        this.setState({
-            visible2: true ,
-            id:record.id ,
-            archiver : null, //归档人
-            archiveTime : null ,// 归档时间
-            archiveDesc : null  //归档说明
-        });
-
-    }
-
-
-    onChangeDate=(value, dateString) =>{
-        console.log('Selected Time: ', value);
-        console.log('Formatted Selected Time: ', dateString);
-        this.setState({
-            handleTime: dateString ,
-        });
-    }
-
-    onOkDate =(value) =>{
-        this.setState({
-            handleTime: value.format('YYYY-MM-DD HH:mm:ss'),
-        });
-        console.log('onOk: ', value);
-    }
-
-
-    onChangeDate2=(value, dateString) =>{
-        console.log('Selected Time: ', value);
-        console.log('Formatted Selected Time: ', dateString);
-        this.setState({
-            archiveTime: dateString ,
-        });
-    }
-
-    onOkDate2 =(value) =>{
-        this.setState({
-            archiveTime: value.format('YYYY-MM-DD HH:mm:ss') ,
-        });
-        console.log('onOk: ', value);
-    }
-
-
-    //处理人
-    onChangeHandler=(e) =>{
-        console.log('下拉的处理人是: ', e);
-        const { handlerOptionData } = this.state;
-
-        if(handlerOptionData !== null){
-            for (var i=0;i<handlerOptionData.length;i++){
-                if(handlerOptionData[i].user_fullname ===e){
-                    this.setState({
-                        telephone:  handlerOptionData[i].user_mobile,
-                        //    telephone:  'asda',
-                    });
-
-                }
-            }
-        }
-
-        this.setState({
-            handler:  e,
-        })
-    }
-
-    // 联系电话
-    onChangeTelephone =(e) =>{
-        this.setState({
-            telephone:  e.target.value,
-        });
-    }
-    //处理说明
-    onChangehandleDesc  =(e) =>{
-        this.setState({
-            handleDesc:  e.target.value,
-        });
-    }
-
-
-
-
-    //归档编辑框的确定
-    handleOk2 = (e) => {
-
-        reqwest({
-            url: '/console/alarmQuery/placeOnFile',
-            method: 'GET',
-            credentials: 'include',
-            data: {
-                id : this.state.id,
-                archiver : this.state.archiver, //归档人
-                archiveTime : this.state.archiveTime ,// 归档时间
-                archiveDesc : this.state.archiveDesc  //归档说明
-            }
-        }).then((data) => {
-            var ds = eval('(' + data + ')');
-            console.log("返回的数据结果是", ds[0].result);
-
-            this.setState({
-                activeKey: "4",  //
-                visible2: false ,
-            },()=>{
-                this.getData();
-            });
-        })
-
-    }
-    //归档的取消
-    handleCancel2= (e) => {
-        this.setState({
-            visible2: false ,
-        });
-
-    }
-
-
-
-    //归档人
-    onChangeHandler2=(e) =>{
-        this.setState({
-            archiver:  e.target.value,
-        });
-    }
-
-    //归档说明
-    onChangehandleDesc2  =(e) =>{
-        this.setState({
-            archiveDesc:  e.target.value,
-        });
-    }
-
 
     render() {
         var pageSize1 = this.state.pagination.pageSize;
@@ -473,9 +272,9 @@ class AlarmQuery  extends Component{
             // width: 200,
             width: '10%',
         }, {
-            title: '名称',
-            dataIndex: 'contacter',
-            key: 'contacter',
+            title: '终端编号',
+            dataIndex: 'devTermNo',
+            key: 'devTermNo',
             align: 'center',
             // width: 200,
             width: '10%',
@@ -502,14 +301,9 @@ class AlarmQuery  extends Component{
                 )
             },
 
-        }, {
-            title: '地址',
-            dataIndex: 'ceCustAddr',
-            key: 'ceCustAddr',
-            align: 'center',
-            // width: 200,
-            width: '15%',
-        }, {
+        }
+
+/*        , {
             title: '操作',
             dataIndex: 'cePointName6',
             key: 'cePointName6',
@@ -518,14 +312,15 @@ class AlarmQuery  extends Component{
             width: '15%',
             render: (text, record) => (
                 <span><span><a href="#" onClick={this.showModalEdit.bind(this, record)}>处理</a></span>&nbsp;&nbsp;&nbsp;
-                    {/*        <Popconfirm title="是否确认归档？" onConfirm={this.placeOnFile.bind(this, record)} onCancel={this.cancel} okText="是" cancelText="否">
+                    {/!*        <Popconfirm title="是否确认归档？" onConfirm={this.placeOnFile.bind(this, record)} onCancel={this.cancel} okText="是" cancelText="否">
                      <a href="#">归档</a>
-                     </Popconfirm>*/}
-                    <span><a href="#" onClick={this.placeOnFile.bind(this, record)}>归档</a></span>
+                     </Popconfirm>*!/}
+                    {/!*<span><a href="#" onClick={this.placeOnFile.bind(this, record)}>归档</a></span>*!/}
                 </span>
             )
 
-        }];
+        }*/
+        ];
 
         const columns2 = [, {
             title: '序号 ',
@@ -549,9 +344,9 @@ class AlarmQuery  extends Component{
             // width: 200,
             width: '10%',
         }, {
-            title: '名称',
-            dataIndex: 'contacter',
-            key: 'contacter',
+            title: '终端编号',
+            dataIndex: 'devTermNo',
+            key: 'devTermNo',
             align: 'center',
             // width: 200,
             width: '10%',
@@ -579,12 +374,21 @@ class AlarmQuery  extends Component{
             },
 
         }, {
-            title: '地址',
-            dataIndex: 'ceCustAddr',
-            key: 'ceCustAddr',
+            title: '复归时间',
+            dataIndex: 'soeRecTime',
+            key: 'soeRecTime',
             align: 'center',
             // width: 200,
             width: '15%',
+            render: (text, record, index) => {
+                var gmtCreateValue1 = this.formatDate(text);
+                return(
+                    <div>
+                        <text>{gmtCreateValue1 }</text>
+                    </div>
+                )
+            },
+
         }];
 
         return (
@@ -597,15 +401,14 @@ class AlarmQuery  extends Component{
                      */}
                     <Tabs activeKey ={this.state.activeKey} onChange={this.callback}>
 
-                        <TabPane tab="未处理告警" key="1">
+                        <TabPane tab="实时告警" key="0">
                             <Row>
                                 <Col span={2}><div style={{ float:'left',marginTop:"3%",  marginLeft:17}}> 告警类型：</div></Col>
                                 <Col span={2}>
-                                    <Select defaultValue="0"  onChange={this.SelectHandleChange}  style={{float:'left',  width: '80%'}} >
-                                        <Option value="0">全部</Option>
-                                        <Option value="SOE_CUST_RECHARGE_WARN">充值预警</Option>
-                                        <Option value="SOE_CUST_ARREAR_ALARM">欠费报警</Option>
-                                        <Option value="SOE_TERM_COMM_FAILURE">通讯故障</Option>
+                                    <Select defaultValue="1"  onChange={this.SelectHandleChange}  style={{float:'left',  width: '80%'}} >
+                                        <Option value="1">全部</Option>
+                                        <Option value="2">采集设备报警</Option>
+                                        <Option value="3">表计异常告警</Option>
                                     </Select>
                                 </Col>
                                 <Col span={2} > <div style={{float:'right',marginTop:"3%"}}>告警日期：</div></Col>
@@ -642,7 +445,7 @@ class AlarmQuery  extends Component{
                                     />
                                 </Col>
 
-                                <Col span={1} > <div style={{marginTop :"6%" }}>对象：</div></Col>
+{/*                                <Col span={1} > <div style={{marginTop :"6%" }}>对象：</div></Col>
                                 <Col span={7}>
                                     <Select defaultValue="0"  onChange={this.SelectObjectChange} style={{width: 140}}>
                                         <Option value="0">全部</Option>
@@ -650,7 +453,7 @@ class AlarmQuery  extends Component{
                                         <Option value="2">热力站</Option>
                                         <Option value="3">企业</Option>
                                     </Select>
-                                </Col>
+                                </Col>*/}
                                 <Col span={2}>
                                     <div style={{ float:'right',  marginRight: "20%"}}>
                                         <Button type="primary"  style={{marginTop:0}} onClick={this.selectqueryInfo}>查询</Button>
@@ -676,90 +479,14 @@ class AlarmQuery  extends Component{
 
 
                         </TabPane>
-                        <TabPane tab="处理中告警" key="3">
+                        <TabPane tab="历史告警" key="1">
 
                             <Col span={2}><div style={{ float:'left',marginTop:"3%",  marginLeft:17}}> 告警类型：</div></Col>
                             <Col span={2}>
-                                <Select defaultValue="0"  onChange={this.SelectHandleChange}  style={{float:'left',  width: '80%'}} >
-                                    <Option value="0">全部</Option>
-                                    <Option value="SOE_CUST_RECHARGE_WARN">充值预警</Option>
-                                    <Option value="SOE_CUST_ARREAR_ALARM">欠费报警</Option>
-                                    <Option value="SOE_TERM_COMM_FAILURE">通讯故障</Option>
-                                </Select>
-                            </Col>
-                            <Col span={2}  ><div style={{float:'right',marginTop:"3%"}} >告警日期：</div></Col>
-                            <Col span={3}>
-                                <DatePicker
-
-                                    locale={locale}
-                                    disabledDate={this.disabledStartDate}
-                                    showTime
-                                    format="YYYY-MM-DD"
-                                    value={startValue}
-                                    placeholder="开始时间"
-                                    onChange={this.onStartChange}
-                                    // onOpenChange={this.handleStartOpenChange}
-                                />
-                            </Col>
-                            <Col span={5}>
-                                <div  style={{ float:'left',marginTop :'1.5%',marginLeft:10}}>
-                                    至
-                                </div>
-                                <DatePicker
-                                    style={{ marginLeft: "20%"}}
-                                    locale={locale}
-                                    disabledDate={this.disabledEndDate}
-                                    showTime
-                                    format="YYYY-MM-DD"
-                                    value={endValue}
-                                    placeholder="结束时间"
-                                    onChange={this.onEndChange}
-                                    open={endOpen}
-                                    onOpenChange={this.handleEndOpenChange}
-                                />
-                            </Col>
-
-                            <Col span={1}> <div style={{marginTop :"6%" }}>对象：</div></Col>
-                            <Col span={7}>
-                                <Select defaultValue="0"  onChange={this.SelectObjectChange} style={{width: 140}}>
-                                    <Option value="0">全部</Option>
-                                    <Option value="1">小区</Option>
-                                    <Option value="2">热力站</Option>
-                                    <Option value="3">企业</Option>
-                                </Select>
-                            </Col>
-                            <Col span={2}>
-                                <div style={{ float:'right',  marginRight: "20%"}}>
-                                    <Button type="primary"  style={{marginTop:0}} onClick={this.selectqueryInfo}>查询</Button>
-                                </div>
-                            </Col>
-
-                            <Table
-                                style={{ marginTop: 44}}
-                                columns={columns2}
-                                dataSource={this.state.dataSouce}
-                                // scroll={{ x: 1300 }}  // 加了这个下面会有滚动条
-                                bordered
-                                // footer={() => 'Footer'}
-                                pagination={{
-                                    total: total,
-                                    pageSize: pageSize1,
-                                    showTotal: function () {
-                                        return <div style={{marginRight: 10, marginTop: 5}}> 共计 {this.total} 条数据</div>
-                                    }
-                                }}
-                            />
-
-
-                        </TabPane>
-                        <TabPane tab="已归档告警" key="4">
-                            <Col span={2}><div style={{ float:'left',marginTop:"3%",  marginLeft:17}}> 告警类型：</div></Col>
-                            <Col span={2}>
-                                <Select defaultValue="0"  onChange={this.SelectHandleChange}  style={{float:'left',  width: '80%'}} >
-                                    <Option value="0">全部</Option>
-                                    <Option value="SOE_CUST_RECHARGE_WARN">充值预警</Option>
-                                    <Option value="SOE_CUST_ARREAR_ALARM">欠费报警</Option>
-                                    <Option value="SOE_TERM_COMM_FAILURE">通讯故障</Option>
+                                <Select defaultValue="1"  onChange={this.SelectHandleChange}  style={{float:'left',  width: '80%'}} >
+                                    <Option value="1">全部</Option>
+                                    <Option value="2">采集设备报警</Option>
+                                    <Option value="3">表计异常告警</Option>
                                 </Select>
                             </Col>
                             <Col span={2}  ><div style={{float:'right',marginTop:"3%"}} >告警日期：</div></Col>
@@ -775,10 +502,13 @@ class AlarmQuery  extends Component{
                                     // onOpenChange={this.handleStartOpenChange}
                                 />
                             </Col>
-                            <Col span={5}>
+                            {/* <Col span={1}><div style={{ float:'right',marginTop:"3.5%"}}> 至</div></Col>*/}
+                            <Col span={5} >
+
                                 <div  style={{ float:'left',marginTop :'1.5%',marginLeft:10}}>
                                     至
                                 </div>
+
                                 <DatePicker
                                     style={{ marginLeft: "20%"}}
                                     locale={locale}
@@ -788,12 +518,12 @@ class AlarmQuery  extends Component{
                                     value={endValue}
                                     placeholder="结束时间"
                                     onChange={this.onEndChange}
-                                    open={endOpen}
+                                    // open={endOpen}
                                     // onOpenChange={this.handleEndOpenChange}
                                 />
                             </Col>
 
-                            <Col span={1}><div style={{marginTop :"6%" }}>对象：</div></Col>
+{/*                            <Col span={1}> <div style={{marginTop :"6%" }}>对象：</div></Col>
                             <Col span={7}>
                                 <Select defaultValue="0"  onChange={this.SelectObjectChange} style={{width: 140}}>
                                     <Option value="0">全部</Option>
@@ -801,7 +531,7 @@ class AlarmQuery  extends Component{
                                     <Option value="2">热力站</Option>
                                     <Option value="3">企业</Option>
                                 </Select>
-                            </Col>
+                            </Col>*/}
                             <Col span={2}>
                                 <div style={{ float:'right',  marginRight: "20%"}}>
                                     <Button type="primary"  style={{marginTop:0}} onClick={this.selectqueryInfo}>查询</Button>
@@ -809,7 +539,6 @@ class AlarmQuery  extends Component{
                             </Col>
 
                             <Table
-                                // style={{ marginTop: "2.5%"}}
                                 style={{ marginTop: 44}}
                                 columns={columns2}
                                 dataSource={this.state.dataSouce}
@@ -829,144 +558,6 @@ class AlarmQuery  extends Component{
                         </TabPane>
                     </Tabs>,
                 </Row>
-
-                {/* 开始*/}
-                <Modal
-                    style={{top: 26, height:800}}
-                    width="800px"
-                    //  style={{height:800}}
-                    title="处理编辑框"
-                    visible={this.state.visible}
-                    onOk={this.handleOk}
-                    onCancel={this.handleCancel}
-                    okText="确认"
-                    cancelText="取消"
-                    destroyOnClose ="true" //窗口关闭时  销毁内容
-                    // maskClosable="false"
-                    maskClosable={false}
-
-                >
-
-                    <div>
-                        <Card >
-                            <Row>
-                                <Col span={24}>
-                                    <Col span={8}>
-                                        <span style={{ lineHeight:'32px',float:'left'}}>处理人</span></Col>
-                                    <Col span={8}>
-                                        <span style={{marginLeft:"10%",lineHeight:'32px',float:'left'}}>联系电话</span></Col>
-                                    <Col span={8}>
-                                        <span  style={{marginLeft:"18%",lineHeight:'32px',float:'left'}}>处理时间</span></Col>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col span={24} >
-                                    <Col span={8}>
-                                        <span style={{lineHeight:'34px',float:'left'}}>
-                                           {/* <Input placeholder="处理人" defaultValue={this.state.handler} onChange={this.onChangeHandler} />*/}
-                                            <Select style={{ width: 200}}   onChange={this. onChangeHandler}>
-                                                            {this.state.handlerOption}
-                                                        </Select>
-
-                                        </span></Col>
-                                    <Col span={8} >
-                                        <span style={{marginLeft:"10%",lineHeight:'34px',float:'left'}}><Input placeholder="联系电话" defaultValue={this.state.telephone}  value={this.state.telephone} onChange={this.onChangeTelephone}  disabled="false" /></span></Col>
-                                    <Col span={8}>
-                                        <span style={{ lineHeight:'34px',float:'right'}}>     <DatePicker locale={locale} showTime placeholder="处理时间" onChange={this.onChangeDate} onOk={this.onOkDate} format="YYYY-MM-DD HH:mm:ss"/></span></Col>
-                                    {/*  disabled= {this.state.details}*/}
-                                </Col>
-                            </Row>
-                            <br/>
-
-                            <Row>
-                                <Col span={24} >
-                                    <Col span={24}>
-                                        <span style={{lineHeight:'32px',float:'left'}}>处理说明</span></Col>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col span={24} >
-                                    <Col span={24}>
-                                <span style={{lineHeight:'32px'}}>
-                                    <TextArea placeholder="填写处理说明" autosize={{ minRows: 2, maxRows: 6 }}  onChange={this.onChangehandleDesc.bind(this)} />
-                                    {/*onChange={this.handle_sugst.bind(this)} defaultValue={this.state.adviceValue} disabled= {this.state.details}*/}
-                                </span></Col>
-                                </Col>
-                            </Row>
-
-                        </Card>
-
-                    </div>
-                </Modal>
-
-                {/*  结束*/}
-
-
-                {/*归档开始*/}
-                <Modal
-                    style={{top: 26, height:800}}
-                    width="800px"
-                    //  style={{height:800}}
-                    title="归档编辑框"
-                    visible={this.state.visible2}
-                    onOk={this.handleOk2}
-                    onCancel={this.handleCancel2}
-                    okText="确认"
-                    cancelText="取消"
-                    destroyOnClose ="true" //窗口关闭时  销毁内容
-                    // maskClosable="false"
-                    maskClosable={false}
-
-                >
-
-                    <div>
-                        <Card >
-                            <Row>
-                                <Col span={24}>
-                                    <Col span={8}>
-                                        <span style={{ lineHeight:'32px',float:'left'}}>归档人</span></Col>
-                                    <Col span={8}>
-                                        {/*<span style={{marginLeft:"10%",lineHeight:'32px',float:'left'}}>联系电话</span>*/}</Col>
-                                    <Col span={8}>
-                                        <span  style={{marginLeft:"18%",lineHeight:'32px',float:'left'}}>归档时间</span></Col>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col span={24} >
-                                    <Col span={8}>
-                                        <span style={{lineHeight:'34px',float:'left'}}><Input placeholder="归档人" defaultValue={this.state.handler} onChange={this.onChangeHandler2} /></span></Col>
-                                    <Col span={8} >{/*
-                                     <span style={{marginLeft:"10%",lineHeight:'34px',float:'left'}}><Input placeholder="联系电话" defaultValue={this.state.telephone}  onChange={this.onChangeTelephone} /></span>*/}</Col>
-                                    <Col span={8}>
-                                        <span style={{ lineHeight:'34px',float:'right'}}>     <DatePicker locale={locale} showTime placeholder="归档时间" onChange={this.onChangeDate2} onOk={this.onOkDate2} /></span></Col>
-                                    {/*  disabled= {this.state.details}*/}
-                                </Col>
-                            </Row>
-                            <br/>
-
-                            <Row>
-                                <Col span={24} >
-                                    <Col span={24}>
-                                        <span style={{lineHeight:'32px',float:'left'}}>归档说明</span></Col>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col span={24} >
-                                    <Col span={24}>
-                                <span style={{lineHeight:'32px'}}>
-                                    <TextArea placeholder="填写处理说明" autosize={{ minRows: 2, maxRows: 6 }}  onChange={this.onChangehandleDesc2.bind(this)} />
-                                    {/*onChange={this.handle_sugst.bind(this)} defaultValue={this.state.adviceValue} disabled= {this.state.details}*/}
-                                </span></Col>
-                                </Col>
-                            </Row>
-
-                        </Card>
-
-                    </div>
-                </Modal>
-                {/*归档结束*/}
-
-
 
             </div>
 

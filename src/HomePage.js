@@ -796,17 +796,11 @@ class HomePage  extends Component{
             }
 
             if(ds[0].rechargeNum !== null  && ds[0].rechargeNum !== undefined){
-               /* this.setState({
-                    rechargeNum: ds[0].rechargeNum   // 充值预警
-                });
-                */
-                rechargeNum =ds[0].rechargeNum
+                rechargeNum =ds[0].rechargeNum   // 采集终端故障
             }
             if(ds[0].arrearsNum !== null  && ds[0].arrearsNum !== undefined){
-/*                this.setState({
-                    arrearsNum: ds[0].arrearsNum  //欠费预警
-                });*/
-                arrearsNum = ds[0].arrearsNum;
+
+                arrearsNum = ds[0].arrearsNum;  //量测表计采集故障
             }
 
             if(ds[0].LimitNum !== null  && ds[0].LimitNum !== undefined){
@@ -859,7 +853,7 @@ class HomePage  extends Component{
                     //     5,  // 下
                     //     10, // 左
                     // ]
-                    data:['充值预警','欠费预警','越限告警','通讯故障'],
+                    data:['终端采集故障','量测表计故障','终端通讯故障'],
                 },
 
                 series: [
@@ -892,10 +886,9 @@ class HomePage  extends Component{
                             }
                         },
                         data:[
-                            {value:rechargeNum, name:'充值预警'},
-                            {value:arrearsNum, name:'欠费预警'},
-                            {value:LimitNum, name:'越限告警'},
-                            {value:newsletterNum, name:'通讯故障'},
+                            {value:rechargeNum, name:'终端采集故障'},
+                            {value:arrearsNum, name:'量测表计故障'},
+                            {value:newsletterNum, name:'终端通讯故障'},
                         ]
                     }
                 ]

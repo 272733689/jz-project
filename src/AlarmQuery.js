@@ -13,7 +13,7 @@ moment.locale('zh-cn');
 const { TabPane } = Tabs;
 const {TextArea} = Input;
 const { Option } = Select;
-
+const dateFormat = 'YYYY-MM-DD';
 
 
 
@@ -21,14 +21,14 @@ class AlarmQuery  extends Component{
     state = {
 
         pagination: {pageSize: pageSize,current:1},
-        startValue: null, // 开始时间
-        endValue: null,  // 结束时间
+        startValue: moment(new Date(), dateFormat), // 开始时间
+        endValue: moment(new Date(new Date().getTime() + 24*60*60*1000), dateFormat),  // 结束时间
         endOpen: false,   //打开 ？
         activeKey : '0', // 默认打开的tab1  未处理的页面
         sortType  : '0',      //      充值预警，欠费报警，越限报警，通讯故障
         objectType: '0',   // 小区  热力站  企业
-        startDate : null,  // 开始时间
-        endDate : null, // 结束时间
+        startDate : moment(new Date(), dateFormat),  // 开始时间
+        endDate : moment(new Date(new Date().getTime() + 24*60*60*1000), dateFormat), // 结束时间
         dataSouce  : [] , //表格数据
         visible: false, // 处理打开的编辑框
 
@@ -46,6 +46,9 @@ class AlarmQuery  extends Component{
 
         handlerOptionData : [] , //数据集合
 
+        startDate2 : moment(new Date(), dateFormat),  // 开始时间
+        endDate2 : moment(new Date(new Date().getTime() + 24*60*60*1000), dateFormat), // 结束时间
+
     };
     //   加载页面时 触发
     componentDidMount() {
@@ -55,6 +58,16 @@ class AlarmQuery  extends Component{
     //Tab  切换时
     callback = (key) => {
         console.log(key);
+        if(key=="0"){
+            this.setState({
+                startDate : moment(new Date(), dateFormat),  // 开始时间
+                endDate : moment(new Date(new Date().getTime() + 24*60*60*1000), dateFormat), // 结束时间
+                startValue: moment(new Date(), dateFormat), // 开始时间
+                endValue: moment(new Date(new Date().getTime() + 24*60*60*1000), dateFormat),  // 结束时间
+            });
+
+        }
+
         this.setState({
             activeKey: key,  //
         },()=>{
@@ -146,12 +159,17 @@ class AlarmQuery  extends Component{
 
 
     getData = () => {
+        let startDate1=  moment(this.state.startDate).format('YYYY-MM-DD');
+        let endDate1=  moment(this.state.endDate).format('YYYY-MM-DD');
+
         reqwest({
             url: '/console/alarmQuery/queryAlarmQuery',
             method: 'GET',
             credentials: 'include',
             data: {
                 activeKey:this.state.activeKey,
+                startDate :startDate1,
+                endDate :endDate1,
             }
         }).then((data) => {
             var ds = eval('(' + data + ')');
@@ -170,6 +188,10 @@ class AlarmQuery  extends Component{
         console.log("开始时间是："+this.state.startDate);
         console.log("结束时间是："+this.state.endDate);
 
+        let startDate1=  moment(this.state.startDate).format('YYYY-MM-DD');
+        let endDate1=  moment(this.state.endDate).format('YYYY-MM-DD');
+
+
         if(this.state.sortType ==="0"){
             reqwest({
                 url: '/console/alarmQuery/queryAlarmQuery',
@@ -177,8 +199,8 @@ class AlarmQuery  extends Component{
                 credentials: 'include',
                 data: {
                     activeKey:this.state.activeKey,
-                    startDate :this.state.startDate,
-                    endDate :this.state.endDate,
+                    startDate :startDate1,
+                    endDate :endDate1,
                     objectType : this.state.objectType
                 }
             }).then((data) => {
@@ -197,8 +219,8 @@ class AlarmQuery  extends Component{
                 data: {
                     activeKey:this.state.activeKey,
                     sortType :this.state.sortType,
-                    startDate :this.state.startDate,
-                    endDate :this.state.endDate,
+                    startDate :startDate1,
+                    endDate :endDate1,
                     objectType : this.state.objectType
                 }
             }).then((data) => {
@@ -404,62 +426,18 @@ class AlarmQuery  extends Component{
                         <TabPane tab="实时告警" key="0">
                             <Row>
                                 <Col span={2}><div style={{ float:'left',marginTop:"3%",  marginLeft:17}}> 告警类型：</div></Col>
-                                <Col span={2}>
-                                    <Select defaultValue="1"  onChange={this.SelectHandleChange}  style={{float:'left',  width: '80%'}} >
+                                <Col span={20}>
+                                    <Select defaultValue="1"  onChange={this.SelectHandleChange}  style={{float:'left',  width: '200px'}} >
                                         <Option value="1">全部</Option>
                                         <Option value="2">采集设备报警</Option>
                                         <Option value="3">表计异常告警</Option>
                                     </Select>
                                 </Col>
-                                <Col span={2} > <div style={{float:'right',marginTop:"3%"}}>告警日期：</div></Col>
-                                <Col span={3}>
-                                    <DatePicker
-                                        locale={locale}
-                                        disabledDate={this.disabledStartDate}
-                                        showTime
-                                        format="YYYY-MM-DD"
-                                        value={startValue}
-                                        placeholder="开始时间"
-                                        onChange={this.onStartChange}
-                                        // onOpenChange={this.handleStartOpenChange}
-                                    />
-                                </Col>
-                                {/* <Col span={1}><div style={{ float:'right',marginTop:"3.5%"}}> 至</div></Col>*/}
-                                <Col span={5} >
-
-                                    <div  style={{ float:'left',marginTop :'1.5%',marginLeft:10}}>
-                                        至
-                                    </div>
-
-                                    <DatePicker
-                                        style={{ marginLeft: "20%"}}
-                                        locale={locale}
-                                        disabledDate={this.disabledEndDate}
-                                        showTime
-                                        format="YYYY-MM-DD"
-                                        value={endValue}
-                                        placeholder="结束时间"
-                                        onChange={this.onEndChange}
-                                        // open={endOpen}
-                                        // onOpenChange={this.handleEndOpenChange}
-                                    />
-                                </Col>
-
-{/*                                <Col span={1} > <div style={{marginTop :"6%" }}>对象：</div></Col>
-                                <Col span={7}>
-                                    <Select defaultValue="0"  onChange={this.SelectObjectChange} style={{width: 140}}>
-                                        <Option value="0">全部</Option>
-                                        <Option value="1">小区</Option>
-                                        <Option value="2">热力站</Option>
-                                        <Option value="3">企业</Option>
-                                    </Select>
-                                </Col>*/}
                                 <Col span={2}>
                                     <div style={{ float:'right',  marginRight: "20%"}}>
                                         <Button type="primary"  style={{marginTop:0}} onClick={this.selectqueryInfo}>查询</Button>
                                     </div>
                                 </Col>
-
                             </Row>
                             <Table
                                 style={{ marginTop: 13}}
@@ -483,7 +461,7 @@ class AlarmQuery  extends Component{
 
                             <Col span={2}><div style={{ float:'left',marginTop:"3%",  marginLeft:17}}> 告警类型：</div></Col>
                             <Col span={2}>
-                                <Select defaultValue="1"  onChange={this.SelectHandleChange}  style={{float:'left',  width: '80%'}} >
+                                <Select defaultValue="1"  onChange={this.SelectHandleChange}  style={{float:'left',  width: '200px'}} >
                                     <Option value="1">全部</Option>
                                     <Option value="2">采集设备报警</Option>
                                     <Option value="3">表计异常告警</Option>

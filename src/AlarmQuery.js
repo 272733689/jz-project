@@ -173,8 +173,21 @@ class AlarmQuery  extends Component{
             }
         }).then((data) => {
             var ds = eval('(' + data + ')');
+            //判断isvalidate 为true 的才展示
+            let dateiSValid=[];
+            if(ds[0].result != null){
+                for (var i=0;i<ds[0].result.length;i++){
+                    if(ds[0].result[i].devTermStatus == 3){
+                        dateiSValid.push(
+                            ds[0].result[i],
+                        )
+                    }
+                }
+            }
+
+
             this.setState({
-                dataSouce: ds[0].result ,
+                dataSouce: dateiSValid ,
                 handlerOptionData : ds[0].resultHand,
             });
         })
@@ -206,9 +219,19 @@ class AlarmQuery  extends Component{
             }).then((data) => {
                 var ds = eval('(' + data + ')');
                 console.log("返回的数据结果是", ds[0].result);
+                let dateiSValid=[];
+                if(ds[0].result != null){
+                    for (var i=0;i<ds[0].result.length;i++){
+                        if(ds[0].result[i].devTermStatus == 3){
+                            dateiSValid.push(
+                                ds[0].result[i],
+                            )
+                        }
+                    }
+                }
 
                 this.setState({
-                    dataSouce: ds[0].result ,
+                    dataSouce: dateiSValid ,
                 });
             })
         }else{
@@ -226,9 +249,19 @@ class AlarmQuery  extends Component{
             }).then((data) => {
                 var ds = eval('(' + data + ')');
                 console.log("返回的数据结果是", ds[0].result);
+                let dateiSValid=[];
+                if(ds[0].result != null){
+                    for (var i=0;i<ds[0].result.length;i++){
+                        if(ds[0].result[i].devTermStatus == 3){
+                            dateiSValid.push(
+                                ds[0].result[i],
+                            )
+                        }
+                    }
+                }
 
                 this.setState({
-                    dataSouce: ds[0].result ,
+                    dataSouce: dateiSValid ,
                 });
             })
         }
@@ -247,21 +280,22 @@ class AlarmQuery  extends Component{
         var ss = newDate.getSeconds();
         var sAMPM = "AM";
         var iHourCheck = parseInt(sHour);
-        if (iHourCheck > 12) {
-            sAMPM = "PM";
-            sHour = iHourCheck - 12;
-        }
-        else if (iHourCheck === 0) {
-            sHour = "12";
-        }
+        // if (iHourCheck > 12) {
+        //     sAMPM = "PM";
+        //     sHour = iHourCheck - 12;
+        // }
+        // else if (iHourCheck === 0) {
+        //     sHour = "12";
+        // }
         sHour = this.padValue(sHour);
+        ss = this.padValue(ss);
         // return sMonth + "-" + sDay + "-" + sYear + " " + sHour + ":" + sMinute + " " + sAMPM;
         return sYear + "-" + sMonth + "-" + sDay + " " + sHour + ":" + sMinute + ":"+ss ;
 
     }
     padValue(value) {
-
         return (value < 10) ? "0" + value : value;
+        // return (value < 10) ? "0" + value : value;
     }
 
 

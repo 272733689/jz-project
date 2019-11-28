@@ -790,8 +790,20 @@ class HomePage  extends Component{
                 });
             }
             if(ds[0].resultMonthNum !== null  && ds[0].resultMonthNum !== undefined){
+            let  dateiSValid =[];
+                if(ds[0].resultMonthNum != null){
+                    for (var i=0;i<ds[0].resultMonthNum.length;i++){
+                        if(ds[0].resultMonthNum[i].devTermStatus == 3){
+                            dateiSValid.push(
+                                ds[0].resultMonthNum[i],
+                            )
+                        }
+                    }
+                }
+
+
                 this.setState({
-                    resultMonthNum: ds[0].resultMonthNum  //本月告警
+                    resultMonthNum: dateiSValid.length //本月告警
                 });
             }
 
@@ -1171,10 +1183,13 @@ class HomePage  extends Component{
                                     <Col className="WarningPosition">
                                     <Col span={3} > <div  className="WarningMonthFont" style={{float:'right'}}> 本月累计</div></Col>
                                     <Col span={5}><div className="WarningFontValue"> {this.state.resultMonthNum}  个 </div></Col>
-                                    <Col span={3}><div className="WarningMonthFont" style={{float:'right'}} >本月新增 </div> </Col>
-                                    <Col span={5}><div className="WarningFontValue"> {this.state.resultMonthNum} 个 </div> </Col>
+
+                                   {/* <Col span={3}><div className="WarningMonthFont" style={{float:'right'}} >本月新增 </div> </Col>
+                                    <Col span={5}><div className="WarningFontValue"> {this.state.resultMonthNum} 个 </div> </Col>*/}
                                     <Col span={3}> <div className="WarningMonthFont1" style={{float:'right'}}> 未处理</div></Col>
                                     <Col span={5}><div className="WarningFontValue"> {this.state.resultNum}个 </div> </Col>
+                                        <Col span={3}><div className="WarningMonthFont" style={{float:'right'}} > </div> </Col>
+                                        <Col span={5}><div className="WarningFontValue">   </div> </Col>
                                     </Col>
                                 </Row>
                             </Row>

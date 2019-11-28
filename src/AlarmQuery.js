@@ -21,13 +21,13 @@ class AlarmQuery  extends Component{
     state = {
 
         pagination: {pageSize: pageSize,current:1},
-        startValue: moment(new Date(), dateFormat), // 开始时间
+        startValue: moment(new Date(new Date().getFullYear(), new Date().getMonth(), 1), dateFormat), // 开始时间
         endValue: moment(new Date(new Date().getTime() + 24*60*60*1000), dateFormat),  // 结束时间
         endOpen: false,   //打开 ？
         activeKey : '0', // 默认打开的tab1  未处理的页面
         sortType  : '0',      //      充值预警，欠费报警，越限报警，通讯故障
         objectType: '0',   // 小区  热力站  企业
-        startDate : moment(new Date(), dateFormat),  // 开始时间
+        startDate : moment(new Date(new Date().getFullYear(), new Date().getMonth(), 1), dateFormat),  // 开始时间
         endDate : moment(new Date(new Date().getTime() + 24*60*60*1000), dateFormat), // 结束时间
         dataSouce  : [] , //表格数据
         visible: false, // 处理打开的编辑框
@@ -60,9 +60,9 @@ class AlarmQuery  extends Component{
         console.log(key);
         if(key=="0"){
             this.setState({
-                startDate : moment(new Date(), dateFormat),  // 开始时间
+                startDate : moment(new Date(new Date().getFullYear(), new Date().getMonth(), 1), dateFormat),  // 开始时间
                 endDate : moment(new Date(new Date().getTime() + 24*60*60*1000), dateFormat), // 结束时间
-                startValue: moment(new Date(), dateFormat), // 开始时间
+                startValue: moment(new Date(new Date().getFullYear(), new Date().getMonth(), 1), dateFormat), // 开始时间
                 endValue: moment(new Date(new Date().getTime() + 24*60*60*1000), dateFormat),  // 结束时间
             });
 
@@ -158,7 +158,11 @@ class AlarmQuery  extends Component{
      };*/
 
 
+
+
+
     getData = () => {
+
         let startDate1=  moment(this.state.startDate).format('YYYY-MM-DD');
         let endDate1=  moment(this.state.endDate).format('YYYY-MM-DD');
 

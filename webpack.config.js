@@ -4,7 +4,7 @@ const contextPath = 'E:\\webpack';
 module.exports = {
     entry: {
          // "PlanManage" : __dirname + "/src/PlanManage.js",
-       "HomePage" : __dirname + "/src/HomePage.js",
+       "AlarmQuery" : __dirname + "/src/AlarmQuery.js",
        //  "HomePage" : __dirname + "/src/HomePage.js",
        //   "VideoMonitor" : __dirname + "/src/VideoMonitor.js",
 
@@ -82,4 +82,4 @@ module.exports = {
             template: __dirname+"/index.tpl.html"
         })
     ]
-}
+};

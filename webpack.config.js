@@ -68,7 +68,7 @@ module.exports = {
     devServer: {
         contentBase: './page',
         inline: true,
-        port: 3000,
+        port: 4000,
         proxy: {
             '/console/*': {
                 target: 'http://127.0.0.1:60221/',

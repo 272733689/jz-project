@@ -1,6 +1,6 @@
 import  React,{Component}from 'react';
 import  ReactDOM from 'react-dom';
-import {Select,Row, Col,Button ,Table,Popconfirm,Modal,Tabs ,DatePicker,Card,Input } from 'antd';
+import {Select,Row, Col,Button ,Table,Popconfirm,Modal,Tabs ,DatePicker,Card,Input,Spin  } from 'antd';
 
 import reqwest from 'reqwest';
 import locale from 'antd/es/date-picker/locale/zh_CN';
@@ -48,6 +48,7 @@ class AlarmQuery  extends Component{
 
         startDate2 : moment(new Date(), dateFormat),  // 开始时间
         endDate2 : moment(new Date(new Date().getTime() + 24*60*60*1000), dateFormat), // 结束时间
+        loading : false ,
 
     };
     //   加载页面时 触发
@@ -162,6 +163,11 @@ class AlarmQuery  extends Component{
 
 
     getData = () => {
+        setTimeout(() => {
+            this.setState({
+                loading : true
+            });
+        },0);
 
         let startDate1=  moment(this.state.startDate).format('YYYY-MM-DD');
         let endDate1=  moment(this.state.endDate).format('YYYY-MM-DD');
@@ -176,6 +182,11 @@ class AlarmQuery  extends Component{
                 endDate :endDate1,
             }
         }).then((data) => {
+            setTimeout(() => {
+                this.setState({
+                    loading : false
+                });
+            },600);
             var ds = eval('(' + data + ')');
             //判断isvalidate 为true 的才展示
             let dateiSValid=[];
@@ -200,6 +211,11 @@ class AlarmQuery  extends Component{
 
     // 点击查询按钮时 出发的方法
     selectqueryInfo=(value)=>{
+        setTimeout(() => {
+            this.setState({
+                loading : true
+            });
+        },0);
         console.log("tab 页是 ："+this.state.activeKey);
         console.log("告警类型是："+this.state.sortType );
         console.log("开始时间是："+this.state.startDate);
@@ -210,6 +226,7 @@ class AlarmQuery  extends Component{
 
 
         if(this.state.sortType ==="0"){
+
             reqwest({
                 url: '/console/alarmQuery/queryAlarmQuery',
                 method: 'GET',
@@ -221,6 +238,11 @@ class AlarmQuery  extends Component{
                     objectType : this.state.objectType
                 }
             }).then((data) => {
+                setTimeout(() => {
+                    this.setState({
+                        loading : false
+                    });
+                },600);
                 var ds = eval('(' + data + ')');
                 console.log("返回的数据结果是", ds[0].result);
                 let dateiSValid=[];
@@ -251,6 +273,11 @@ class AlarmQuery  extends Component{
                     objectType : this.state.objectType
                 }
             }).then((data) => {
+                setTimeout(() => {
+                    this.setState({
+                        loading : false
+                    });
+                },600);
                 var ds = eval('(' + data + ')');
                 console.log("返回的数据结果是", ds[0].result);
                 let dateiSValid=[];
@@ -463,9 +490,9 @@ class AlarmQuery  extends Component{
 
                         <TabPane tab="实时告警" key="0">
                             <Row>
-                                <Col span={2}><div style={{ float:'left',marginTop:"3%",  marginLeft:17}}> 告警类型：</div></Col>
-                                <Col span={20}>
-                                    <Select defaultValue="1"  onChange={this.SelectHandleChange}  style={{float:'left',  width: '200px'}} >
+                                <Col span={22}>
+                                    <div style={{ float:'left',marginTop:"0.45%",  marginLeft:17}}> 告警类型：</div>
+                                    <Select defaultValue="1"  onChange={this.SelectHandleChange}  style={{float:'left',  width: 150}} >
                                         <Option value="1">全部</Option>
                                         <Option value="2">采集设备报警</Option>
                                         <Option value="3">表计异常告警</Option>
@@ -496,17 +523,15 @@ class AlarmQuery  extends Component{
 
                         </TabPane>
                         <TabPane tab="历史告警" key="1">
-
-                            <Col span={2}><div style={{ float:'left',marginTop:"3%",  marginLeft:17}}> 告警类型：</div></Col>
-                            <Col span={2}>
-                                <Select defaultValue="1"  onChange={this.SelectHandleChange}  style={{float:'left',  width: '200px'}} >
+                            <Col span={22}>
+                                <div style={{ float:'left',marginTop:"0.45%",  marginLeft:17}}> 告警类型：</div>
+                                <Select defaultValue="1"  onChange={this.SelectHandleChange}  style={{float:'left',  width:150}} >
                                     <Option value="1">全部</Option>
                                     <Option value="2">采集设备报警</Option>
                                     <Option value="3">表计异常告警</Option>
                                 </Select>
-                            </Col>
-                            <Col span={2}  ><div style={{float:'right',marginTop:"3%"}} >告警日期：</div></Col>
-                            <Col span={3}>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                               告警日期：
                                 <DatePicker
                                     locale={locale}
                                     disabledDate={this.disabledStartDate}
@@ -516,17 +541,11 @@ class AlarmQuery  extends Component{
                                     placeholder="开始时间"
                                     onChange={this.onStartChange}
                                     // onOpenChange={this.handleStartOpenChange}
-                                />
-                            </Col>
-                            {/* <Col span={1}><div style={{ float:'right',marginTop:"3.5%"}}> 至</div></Col>*/}
-                            <Col span={5} >
+                                />  &nbsp;&nbsp;&nbsp; 至 &nbsp;&nbsp;&nbsp;
 
-                                <div  style={{ float:'left',marginTop :'1.5%',marginLeft:10}}>
-                                    至
-                                </div>
 
                                 <DatePicker
-                                    style={{ marginLeft: "20%"}}
+                                    // style={{ marginLeft: "20%"}}
                                     locale={locale}
                                     disabledDate={this.disabledEndDate}
                                     showTime
@@ -539,22 +558,18 @@ class AlarmQuery  extends Component{
                                 />
                             </Col>
 
-{/*                            <Col span={1}> <div style={{marginTop :"6%" }}>对象：</div></Col>
-                            <Col span={7}>
-                                <Select defaultValue="0"  onChange={this.SelectObjectChange} style={{width: 140}}>
-                                    <Option value="0">全部</Option>
-                                    <Option value="1">小区</Option>
-                                    <Option value="2">热力站</Option>
-                                    <Option value="3">企业</Option>
-                                </Select>
-                            </Col>*/}
+
+
                             <Col span={2}>
                                 <div style={{ float:'right',  marginRight: "20%"}}>
                                     <Button type="primary"  style={{marginTop:0}} onClick={this.selectqueryInfo}>查询</Button>
                                 </div>
                             </Col>
 
-                            <Table
+                            <Spin spinning={this.state.loading} delay={500}>
+                                {/* --------加载状态-----------*/}
+
+                                <Table
                                 style={{ marginTop: 44}}
                                 columns={columns2}
                                 dataSource={this.state.dataSouce}
@@ -569,7 +584,8 @@ class AlarmQuery  extends Component{
                                     }
                                 }}
                             />
-
+                            </Spin>
+                                {/* --------加载状态-----------*/}
 
                         </TabPane>
                     </Tabs>,
